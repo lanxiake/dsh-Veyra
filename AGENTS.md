@@ -180,6 +180,12 @@ Comments and docs state complete contracts and context, not reasoning transcript
 
 Docs accompany every code change: update affected README and JSDoc contracts together. Routine bilingual work follows [docs/AGENTS.md](docs/AGENTS.md); only explicit user invocation may run `dsh-translate-docs`. Current-state prose, one physical line per paragraph, one home per fact, and word budgets live there.
 
+## Fork maintenance
+
+This repository is a fork of `deepseek-ai/deepseek-harness`, which accepts no external pull requests, so local changes never rejoin upstream. `master` mirrors upstream and takes no commits; `merge/local` is the integration line and the only branch that must stay runnable; each change lands on its own `local/<name>` branch and merges into `merge/local` with `--no-ff`, never rebase. Sync from `upstream` tags (`dsh-v*`), never from `master`, with `scripts/sync-upstream.sh`; after every sync run `pnpm install` then `pnpm run build:check`. The `upstream` remote's push URL is a sentinel and must stay unreachable.
+
+Prefer a standalone plugin or profile patch over editing `packages/`: those sources, the generated `docs/` catalogs, `tsconfig.*.json`, and `pnpm-lock.yaml` are hot zones upstream changes daily. Never edit `CLAUDE.md` or `packages/CLAUDE.md`, which are symlinks materialized as text under `core.symlinks=false`. On a generated-file conflict, take upstream's side and regenerate with the `gen-*` scripts.
+
 ## Editing these instructions
 
 `CLAUDE.md` symlinks `AGENTS.md` at root and `packages/`; edit the real file. Keep each rule self-contained while linking high-level docs. Condense when clarity survives; raise a `verify-doc-budgets` ceiling when the required content genuinely needs more space.
